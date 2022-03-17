@@ -9,8 +9,8 @@ function * idMaker (): Generator<any, any, any> {
 }
 
 const iterator = idMaker();
-// first call next, will stop where first yield previous position
-// so pass arguments for it doesn't work
+// first call next method, function will stop where first yield previous position
+// so pass arguments for next method doesn't work
 console.log(iterator.next());
 // next argument will replace yield expression where execution was paused with the argument from next()
 console.log(iterator.next(3));
