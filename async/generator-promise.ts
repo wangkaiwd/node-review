@@ -15,15 +15,21 @@ function * testPromise (): Generator<any, any, any> {
 
 const co = (generator: any) => {
   const iterator = generator();
-  const run = (...args: any[]) => {
-    const { value, done } = iterator.next(...args);
-    if (!done) {
-      return value.then((result: any) => run(result));
-    } else {
-      return Promise.resolve(value);
+  const next = (...args: any[]): Promise<any> => {
+    try {
+      const { value, done } = iterator.next(...args);
+      if (!done) {
+        // value may be non promise
+        // such as yield 5
+        return Promise.resolve(value).then(next);
+      } else {
+        return Promise.resolve(value);
+      }
+    } catch (err) { // handle error
+      return Promise.reject(err);
     }
   };
-  return run();
+  return next();
 };
 
 co(testPromise).then((res: any) => {
